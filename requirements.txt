@@ -1,0 +1,9 @@
+evaluate==0.4.1
+langchain==0.0.352
+langchain_community==0.0.6
+llama_index==0.9.22
+streamlit==1.29.0
+streamlit_chat==0.1.1
+torch==2.1.2
+tqdm==4.66.1
+transformers==4.36.2
