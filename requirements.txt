@@ -7,3 +7,5 @@ streamlit_chat==0.1.1
 torch==2.1.2
 tqdm==4.66.1
 transformers==4.36.2
+
+chromadb~=0.4.21

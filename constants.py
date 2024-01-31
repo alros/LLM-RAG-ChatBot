@@ -18,3 +18,17 @@ Answer: [/INST]"""
 }
 
 model = 'mistral'
+
+###
+
+TEXT_TITLE = "Chatbot with PDF"
+TEXT_HEADER = "KB-Chatbot"
+TEXT_SUBHEADER = "Chat"
+TEXT_THINKING = "Thinking"
+
+INPUT_MESSAGE = "Message"
+INPUT_USER = "user_input"
+
+SESSION_MESSAGES = "messages"
+SESSION_ASSISTANT = "assistant"
+SESSION_SPINNER_THINKING = "thinking_spinner"
