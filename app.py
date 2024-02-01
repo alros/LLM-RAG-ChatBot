@@ -17,13 +17,14 @@ def new_knowledge_manager():
 
     llama_debug = LlamaDebugHandler(print_trace_on_end=True)
 
-    return KnowledgeManager(kb_path="kb",
+    return (KnowledgeManager(kb_path="kb",
                             vector_store=store,
                             llm=mistral,
-                            callbacks=[llama_debug])
+                            callbacks=[llama_debug]),
+            llama_debug)
 
 
 if __name__ == "__main__":
-    km = new_knowledge_manager()
-    ca = ChatAssistant(knowledge_manager=km)
+    km, llama_debug = new_knowledge_manager()
+    ca = ChatAssistant(knowledge_manager=km, llama_debug=llama_debug)
     Page(chatAssistant=ca)
