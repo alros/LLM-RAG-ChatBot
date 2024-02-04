@@ -30,14 +30,13 @@ transformers = [
 pipeline = IngestionPipeline(transformations=transformers)
 reader = SimpleDirectoryReader(kb_path, recursive=True)
 
-documents = reader.load_data()
+for docs in reader.iter_data():
+    base_nodes: List[TextNode] = pipeline.run(documents=docs)
 
-base_nodes: List[TextNode] = pipeline.run(documents=documents)
-
-for node in base_nodes:
-    print(f'adding {node.metadata["file_path"]}')
-    chroma_collection.add(
-        documents=[node.text],
-        ids=[node.node_id],
-        metadatas=[node.metadata]
-    )
+    for node in base_nodes:
+        print(f'adding {node.metadata["file_path"]}')
+        chroma_collection.add(
+            documents=[node.text],
+            ids=[node.node_id],
+            metadatas=[node.metadata]
+        )
