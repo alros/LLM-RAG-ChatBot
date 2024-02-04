@@ -2,12 +2,29 @@
 
 LLM-based chatbot using Retrieval-Augmented Generation (RAG) to give answers based on local files.
 
+## Setup
+
+`pip install -r requirements.txt`
+
 ## Usage
 
-Store txt documents in `./kb` and run the application with
+Store txt documents in `./kb`.
+
+Start Ollama with
 
 ```shell
 ollama serve
+```
+
+Build the Db with
+
+```shell
+python BuildDb.py
+```
+
+Run the application with
+
+```shell
 python -m streamlit run app.py
 ```
 

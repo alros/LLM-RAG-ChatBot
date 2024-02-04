@@ -1,3 +1,4 @@
+# LLM
 models = {
     'mistral': {
         'model_name': 'mistral',
@@ -16,19 +17,20 @@ Context: {context}
 Answer: [/INST]"""
     }
 }
-
 model = 'mistral'
 
-###
+# Paths
+db_path = './chroma_db'
+kb_path = './kb'
+db_collection = 'bio'
 
+# App elements
 TEXT_TITLE = "Chatbot with PDF"
 TEXT_HEADER = "KB-Chatbot"
 TEXT_SUBHEADER = "Chat"
 TEXT_THINKING = "Thinking"
-
 INPUT_MESSAGE = "Message"
 INPUT_USER = "user_input"
-
 SESSION_MESSAGES = "messages"
 SESSION_ASSISTANT = "assistant"
 SESSION_SPINNER_THINKING = "thinking_spinner"

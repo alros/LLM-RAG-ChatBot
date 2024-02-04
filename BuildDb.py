@@ -1,0 +1,43 @@
+from typing import List
+
+import chromadb
+from llama_index import SimpleDirectoryReader
+from llama_index.callbacks import LlamaDebugHandler
+from llama_index.extractors import TitleExtractor
+from llama_index.ingestion import IngestionPipeline
+from llama_index.llms import Ollama
+from llama_index.node_parser import SentenceSplitter
+from llama_index.schema import MetadataMode, TextNode
+from llama_index.vector_stores import ChromaVectorStore
+
+from constants import *
+
+db = chromadb.PersistentClient(path=db_path)
+chroma_collection = db.get_or_create_collection(db_collection)
+store = ChromaVectorStore(chroma_collection=chroma_collection)
+
+llm = Ollama(model=model)
+
+llama_debug = LlamaDebugHandler(print_trace_on_end=True)
+
+transformers = [
+    SentenceSplitter(chunk_size=1024, chunk_overlap=20),
+    TitleExtractor(
+        llm=llm, metadata_mode=MetadataMode.EMBED, num_workers=8
+        # , SummaryExtractor(llm=llm, metadata_mode=MetadataMode.EMBED, num_workers=8
+    )
+]
+pipeline = IngestionPipeline(transformations=transformers)
+reader = SimpleDirectoryReader(kb_path, recursive=True)
+
+documents = reader.load_data()
+
+base_nodes: List[TextNode] = pipeline.run(documents=documents)
+
+for node in base_nodes:
+    print(f'adding {node.metadata["file_path"]}')
+    chroma_collection.add(
+        documents=[node.text],
+        ids=[node.node_id],
+        metadatas=[node.metadata]
+    )

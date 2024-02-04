@@ -7,9 +7,11 @@ from ChatAssistant import ChatAssistant
 from KnowledgeManager import KnowledgeManager
 from Page import Page
 
+from constants import *
+
 
 def new_knowledge_manager():
-    db = chromadb.PersistentClient(path="./chroma_db")
+    db = chromadb.PersistentClient(path=db_path)
     chroma_collection = db.get_or_create_collection("bio")
     store = ChromaVectorStore(chroma_collection=chroma_collection)
 
@@ -17,10 +19,9 @@ def new_knowledge_manager():
 
     llama_debug = LlamaDebugHandler(print_trace_on_end=True)
 
-    return (KnowledgeManager(kb_path="kb",
-                            vector_store=store,
-                            llm=mistral,
-                            callbacks=[llama_debug]),
+    return (KnowledgeManager(vector_store=store,
+                             llm=mistral,
+                             callbacks=[llama_debug]),
             llama_debug)
 
 
