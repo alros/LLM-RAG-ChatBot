@@ -20,9 +20,12 @@ Answer: [/INST]"""
 model = 'mistral'
 
 # Paths
-db_path = './chroma_db'
+db_path = './chroma_db/gutenberg'
 kb_path = './kb'
-db_collection = 'bio'
+db_collection = 'gutenberg'
+
+# Retrieval
+retrieve_N_chunks = 3
 
 # App elements
 TEXT_TITLE = "Chatbot with PDF"

@@ -12,10 +12,10 @@ from constants import *
 
 def new_knowledge_manager():
     db = chromadb.PersistentClient(path=db_path)
-    chroma_collection = db.get_or_create_collection("bio")
+    chroma_collection = db.get_or_create_collection(db_collection)
     store = ChromaVectorStore(chroma_collection=chroma_collection)
 
-    mistral = Ollama(model="mistral")
+    mistral = Ollama(model=model)
 
     llama_debug = LlamaDebugHandler(print_trace_on_end=True)
 

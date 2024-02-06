@@ -33,8 +33,8 @@ reader = SimpleDirectoryReader(kb_path, recursive=True)
 for docs in reader.iter_data():
     base_nodes: List[TextNode] = pipeline.run(documents=docs)
 
-    for node in base_nodes:
-        print(f'adding {node.metadata["file_path"]}')
+    for idx, node in enumerate(base_nodes):
+        print(f'adding {node.metadata["file_path"]} / {idx} / {node.node_id}')
         chroma_collection.add(
             documents=[node.text],
             ids=[node.node_id],
