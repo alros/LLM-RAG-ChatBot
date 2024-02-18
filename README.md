@@ -2,6 +2,12 @@
 
 LLM-based chatbot using Retrieval-Augmented Generation (RAG) to give answers based on local files.
 
+Status: **WORK IN PROGRESS!**
+
+## Design
+
+![doc](docs/img/RAG.drawio.png)
+
 ## Setup
 
 `pip install -r requirements.txt`
@@ -39,3 +45,4 @@ The application is memory intensive and the answer may take 30+ seconds.
 The following diagram shows the memory pressure during a query. The phases of document search and answer generation are clearly visible.
 
 ![memory pressure](docs/img/memory.png)
+
