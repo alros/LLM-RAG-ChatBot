@@ -4,9 +4,22 @@ LLM-based chatbot using Retrieval-Augmented Generation (RAG) to give answers bas
 
 Status: **WORK IN PROGRESS!**
 
+- [Design](#design)
+  - [Overall architecture](#overall-architecture)
+  - [Functional flow](#functional-flow)
+- [Setup](#setup)
+- [Usage](#usage)
+- [Performance](#performance)
+
 ## Design
 
+### Overall architecture
+
 ![doc](docs/img/RAG.drawio.png)
+
+### Functional flow
+
+![flow](docs/img/LLM-Dementia-flow.drawio.png)
 
 ## Setup
 
