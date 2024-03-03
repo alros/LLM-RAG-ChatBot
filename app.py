@@ -1,31 +1,24 @@
-import chromadb
-from llama_index.callbacks import LlamaDebugHandler
-from llama_index.llms import Ollama
-from llama_index.vector_stores import ChromaVectorStore
+from llama_index.legacy.llms import Ollama
+from page import Page
 
-from ChatAssistant import ChatAssistant
-from KnowledgeManager import KnowledgeManager
-from Page import Page
-
-from constants import *
-
-
-def new_knowledge_manager():
-    db = chromadb.PersistentClient(path=db_path)
-    chroma_collection = db.get_or_create_collection(db_collection)
-    store = ChromaVectorStore(chroma_collection=chroma_collection)
-
-    mistral = Ollama(model=model)
-
-    llama_debug = LlamaDebugHandler(print_trace_on_end=True)
-
-    return (KnowledgeManager(vector_store=store,
-                             llm=mistral,
-                             callbacks=[llama_debug]),
-            llama_debug)
-
+from db import DB
+from execution_context import ExecutionContext
+from steps import ChatGenerationStep, SummaryGenerationStep, DiagnosisGenerationStep
 
 if __name__ == "__main__":
-    km, llama_debug = new_knowledge_manager()
-    ca = ChatAssistant(knowledge_manager=km, llama_debug=llama_debug)
-    Page(chatAssistant=ca)
+    collection_dementia = 'Dementia'
+    db_path = './chroma_db/diagnosis'
+    model = 'mistral'
+
+    collection = collection_dementia
+
+    db = DB(db_path=db_path,
+            collection=collection)
+    llm = Ollama(model=model)
+
+    execution_context = ExecutionContext(llm=llm)
+    step_chat = ChatGenerationStep(db=db, execution_context=execution_context)
+    step_summary = SummaryGenerationStep(db=db, execution_context=execution_context)
+    step_diagnosis = DiagnosisGenerationStep(db=db, execution_context=execution_context)
+
+    Page(step_chat=step_chat, step_summary=step_summary, step_diagnosis=step_diagnosis)

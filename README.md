@@ -2,7 +2,11 @@
 
 LLM-based chatbot using Retrieval-Augmented Generation (RAG) to give answers based on local files.
 
+Use case: evaluate if a person shows signs of dementia.
+
 Status: **WORK IN PROGRESS!**
+
+![screenshot](docs/img/screenshot.png)
 
 - [Design](#design)
   - [Overall architecture](#overall-architecture)
