@@ -7,7 +7,7 @@ ollama serve 2>&1 &
 OLLAMA_PID=$!
 
 # start the service
-python -m streamlit run app.py
+python -m streamlit run chatbot/app.py
 
 # shut down ollama
 kill -9 $OLLAMA_PID
