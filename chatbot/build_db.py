@@ -1,22 +1,22 @@
 from typing import List
 
 import chromadb
-from llama_index import SimpleDirectoryReader
-from llama_index.callbacks import LlamaDebugHandler
-from llama_index.extractors import TitleExtractor
-from llama_index.ingestion import IngestionPipeline
-from llama_index.llms import Ollama
-from llama_index.node_parser import SentenceSplitter
-from llama_index.schema import MetadataMode, TextNode
-from llama_index.vector_stores import ChromaVectorStore
+from llama_index.legacy import SimpleDirectoryReader
+from llama_index.legacy.callbacks import LlamaDebugHandler
+from llama_index.legacy.extractors import TitleExtractor
+from llama_index.legacy.ingestion import IngestionPipeline
+from llama_index.legacy.llms import Ollama
+from llama_index.legacy.node_parser import SentenceSplitter
+from llama_index.legacy.schema import MetadataMode, TextNode
+from llama_index.legacy.vector_stores import ChromaVectorStore
 
-from constants import *
+from chatbot.config import Config
 
-db = chromadb.PersistentClient(path=db_path)
-chroma_collection = db.get_or_create_collection(db_collection)
+db = chromadb.PersistentClient(path=Config.get('dbPath'))
+chroma_collection = db.get_or_create_collection(Config.get('collection'))
 store = ChromaVectorStore(chroma_collection=chroma_collection)
 
-llm = Ollama(model=model)
+llm = Ollama(model=Config.get('model'))
 
 llama_debug = LlamaDebugHandler(print_trace_on_end=True)
 
@@ -28,7 +28,7 @@ transformers = [
     )
 ]
 pipeline = IngestionPipeline(transformations=transformers)
-reader = SimpleDirectoryReader(kb_path, recursive=True)
+reader = SimpleDirectoryReader(Config.get('kb'), recursive=True)
 
 for docs in reader.iter_data():
     base_nodes: List[TextNode] = pipeline.run(documents=docs)

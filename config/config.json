@@ -1,6 +1,7 @@
 {
   "collection": "Dementia",
   "dbPath": "./chroma_db/diagnosis",
+  "kb": "./kb",
   "model": "mistral",
   "prompts": {
     "chat": {
