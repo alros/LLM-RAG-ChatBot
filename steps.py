@@ -11,7 +11,7 @@ from llama_index.legacy.vector_stores import ChromaVectorStore
 
 from db import DB
 from execution_context import ExecutionContext
-from nullRetriever import NullRetriever
+from null_retriever import NullRetriever
 from prompts import Prompts, SummaryPrompts, DiagnosisPrompts, ChatPrompts
 
 
