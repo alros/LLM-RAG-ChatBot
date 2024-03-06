@@ -1,14 +1,16 @@
+import json
 import re
 from abc import ABC
 
 from chromadb import ClientAPI
-from llama_index.legacy import VectorStoreIndex, ServiceContext, ChatPromptTemplate
-from llama_index.legacy.core.base_retriever import BaseRetriever
-from llama_index.legacy.llms import ChatMessage, MessageRole
-from llama_index.legacy.query_engine import RetrieverQueryEngine
-from llama_index.legacy.response_synthesizers import ResponseMode
-from llama_index.legacy.vector_stores import ChromaVectorStore
+from llama_index import VectorStoreIndex, ServiceContext, ChatPromptTemplate
+from llama_index.core.base_retriever import BaseRetriever
+from llama_index.llms import ChatMessage, MessageRole
+from llama_index.query_engine import RetrieverQueryEngine
+from llama_index.response_synthesizers import ResponseMode
+from llama_index.vector_stores import ChromaVectorStore
 
+from chatbot.config import Config
 from db import DB
 from execution_context import ExecutionContext
 from null_retriever import NullRetriever
@@ -25,7 +27,7 @@ class Step(ABC):
         self._execution_context = execution_context
         self._query_engine = None
 
-    def query(self, query: str):
+    def query(self, query: str) -> str:
         if self._query_engine is None:
             self._query_engine = self._get_query_engine()
         response = self._query_engine.query(query)
@@ -33,7 +35,9 @@ class Step(ABC):
         return response.response
 
     def _get_query_engine(self) -> RetrieverQueryEngine:
-        vector_retriever_chunk = self._get_retriever()
+        vector_retriever_chunk = self._get_retriever(collection=Config.get('collection'),
+                                                     db=self._db.get_instance(),
+                                                     service_context=self._execution_context.get_service_context())
         text_template = self._get_prompt_template(system_prompt=self._prompts.system_prompt,
                                                   user_prompt=self._prompts.user_prompt)
         return RetrieverQueryEngine.from_args(
@@ -43,8 +47,8 @@ class Step(ABC):
             response_mode=ResponseMode.COMPACT,
             text_qa_template=text_template)
 
-    @staticmethod
-    def _get_retriever() -> BaseRetriever:
+    def _get_retriever(self, collection: str, db: ClientAPI,
+                       service_context: ServiceContext) -> BaseRetriever:
         return NullRetriever()
 
     @staticmethod
@@ -70,18 +74,14 @@ class ChatGenerationStep(Step):
         if not query:
             return 'How old are you?'
         next_question = super().query(query)
-        return self._clean_question(next_question)
+        return json.loads(next_question)['Question']
 
-    @staticmethod
-    def _clean_question(next_question):
-        tmp = next_question.split("\n")
-        next_question_clean = tmp[len(tmp) - 1]
-        next_question_clean = next_question_clean.replace('You: ', '')
-        next_question_clean = re.search('"?([^"]*)"?', next_question_clean).group(1)
-        next_question_clean = next_question_clean.replace('"', '')
-        next_question_clean = next_question_clean.strip()
-        print(f'DEBUG:\n  next_question:{next_question}\n  next_question_clean:{next_question_clean}')
-        return next_question_clean if next_question_clean else next_question
+    def _get_retriever(self, collection: str, db: ClientAPI,
+                       service_context: ServiceContext) -> BaseRetriever:
+        chroma_collection = db.get_or_create_collection(collection)
+        vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+        vector_store_index = VectorStoreIndex.from_vector_store(vector_store, service_context=service_context)
+        return vector_store_index.as_retriever(similarity_top_k=self._db.retrieve_n_chunks)
 
 
 class SummaryGenerationStep(Step):
@@ -93,7 +93,7 @@ class DiagnosisGenerationStep(Step):
     def __init__(self, db: DB, execution_context: ExecutionContext):
         super().__init__(prompts=DiagnosisPrompts(), db=db, execution_context=execution_context)
 
-    def _get_vector_retriever_chunk(self, collection: str, db: ClientAPI,
+    def _get_retriever(self, collection: str, db: ClientAPI,
                                     service_context: ServiceContext) -> BaseRetriever:
         chroma_collection = db.get_or_create_collection(collection)
         vector_store = ChromaVectorStore(chroma_collection=chroma_collection)

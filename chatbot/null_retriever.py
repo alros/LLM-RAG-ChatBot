@@ -1,8 +1,8 @@
 from typing import List
 
-from llama_index.legacy import QueryBundle
-from llama_index.legacy.core.base_retriever import BaseRetriever
-from llama_index.legacy.schema import NodeWithScore, Document
+from llama_index import QueryBundle
+from llama_index.core.base_retriever import BaseRetriever
+from llama_index.schema import NodeWithScore, Document
 
 
 class NullRetriever(BaseRetriever):

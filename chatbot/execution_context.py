@@ -1,7 +1,7 @@
-from llama_index.legacy import ServiceContext
-from llama_index.legacy.callbacks import LlamaDebugHandler, CallbackManager, CBEventType
-from llama_index.legacy.llms import CustomLLM
-from llama_index.legacy.response.schema import RESPONSE_TYPE
+from llama_index import ServiceContext
+from llama_index.callbacks import LlamaDebugHandler, CallbackManager, CBEventType
+from llama_index.llms import CustomLLM
+from llama_index.response.schema import RESPONSE_TYPE
 
 
 class ExecutionContext:

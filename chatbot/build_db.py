@@ -1,14 +1,14 @@
 from typing import List
 
 import chromadb
-from llama_index.legacy import SimpleDirectoryReader
-from llama_index.legacy.callbacks import LlamaDebugHandler
-from llama_index.legacy.extractors import TitleExtractor
-from llama_index.legacy.ingestion import IngestionPipeline
-from llama_index.legacy.llms import Ollama
-from llama_index.legacy.node_parser import SentenceSplitter
-from llama_index.legacy.schema import MetadataMode, TextNode
-from llama_index.legacy.vector_stores import ChromaVectorStore
+from llama_index import SimpleDirectoryReader
+from llama_index.callbacks import LlamaDebugHandler
+from llama_index.extractors import TitleExtractor
+from llama_index.ingestion import IngestionPipeline
+from llama_index.llms import Ollama
+from llama_index.node_parser import SentenceSplitter
+from llama_index.schema import MetadataMode, TextNode
+from llama_index.vector_stores import ChromaVectorStore
 
 from chatbot.config import Config
 

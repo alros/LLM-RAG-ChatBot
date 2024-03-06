@@ -1,4 +1,4 @@
-from llama_index.legacy.llms import Ollama
+from llama_index.llms import Ollama
 
 from config import Config
 from page import Page
