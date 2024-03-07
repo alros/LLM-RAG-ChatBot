@@ -1,6 +1,12 @@
 {
   "collection": "Dementia",
   "dbPath": "./chroma_db/diagnosis",
+  "diagnosis": {
+    "minimum_number_of_questions": 5,
+    "minimum_confidence": 0.5,
+    "minimum_number_of_symptoms": 3,
+    "minimum_score": 1.5
+  },
   "kb": "./kb",
   "model": "mistral",
   "prompts": {
@@ -48,6 +54,23 @@
         "Query: {query_str} How many symptoms of the disease does the patient have and how severe is the condition?",
         "You will respond only with a JSON object with the key Number with the number of symptoms, the key Severity with the level of severity from 0 to 1, the key Confidence with the confidence from 0 to 1, and the key Explanation with the explanation.",
         "Answer:"
+      ]
+    },
+    "final_diagnosis": {
+      "system": [
+        "You are a doctor talking with your patient.",
+        "You speak clearly, with a professional tone."
+      ],
+      "user": [
+        "Context information is below.",
+        "<context>",
+        "{context_str}",
+        "</context>",
+        "Given this diagnosis of the patient:",
+        "<diagnosis>",
+        "{query_str}",
+        "</diagnosis>",
+        "Explain the diagnosis to the patient talking directly to him."
       ]
     }
   }
