@@ -37,7 +37,7 @@ This is an example of a complete chat:
 
 > This is based on the current version.
 
-![screenshot](docs/img/screenshot.png)
+![screenshot](docs/img/screenshot1.png)
 
 In the final loop, the dialogue is summarised by the LLM as follows:
 
