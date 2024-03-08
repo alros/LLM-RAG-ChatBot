@@ -1,5 +1,4 @@
 import json
-import re
 from abc import ABC
 
 from chromadb import ClientAPI
@@ -14,7 +13,21 @@ from chatbot.config import Config
 from db import DB
 from execution_context import ExecutionContext
 from null_retriever import NullRetriever
-from prompts import Prompts, SummaryPrompts, DiagnosisPrompts, ChatPrompts
+
+
+class Prompts(ABC):
+    def __init__(self, config_path: str):
+        config = Config.get(config_path)
+        self._system_prompt = '\n'.join(config['system'])
+        self._user_prompt = '\n'.join(config['user'])
+
+    @property
+    def system_prompt(self) -> str:
+        return self._system_prompt
+
+    @property
+    def user_prompt(self) -> str:
+        return self._user_prompt
 
 
 class Step(ABC):
@@ -27,7 +40,7 @@ class Step(ABC):
         self._execution_context = execution_context
         self._query_engine = None
 
-    def query(self, query: str) -> str:
+    def query(self, query: str, **kwargs) -> str:
         if self._query_engine is None:
             self._query_engine = self._get_query_engine()
         response = self._query_engine.query(query)
@@ -66,35 +79,16 @@ class Step(ABC):
         return ChatPromptTemplate(chat_text_qa_msgs)
 
 
-class ChatGenerationStep(Step):
-    def __init__(self, db: DB, execution_context: ExecutionContext):
-        super().__init__(prompts=ChatPrompts(), db=db, execution_context=execution_context)
+class KnowledgeEnrichedStep(Step, ABC):
 
-    def query(self, query: str):
-        if not query:
-            return 'How old are you?'
-        next_question = super().query(query)
-        return json.loads(next_question)['Question']
+    def __init__(self,
+                 prompts: Prompts,
+                 db: DB,
+                 execution_context: ExecutionContext):
+        super().__init__(prompts=prompts, db=db, execution_context=execution_context)
 
     def _get_retriever(self, collection: str, db: ClientAPI,
                        service_context: ServiceContext) -> BaseRetriever:
-        chroma_collection = db.get_or_create_collection(collection)
-        vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
-        vector_store_index = VectorStoreIndex.from_vector_store(vector_store, service_context=service_context)
-        return vector_store_index.as_retriever(similarity_top_k=self._db.retrieve_n_chunks)
-
-
-class SummaryGenerationStep(Step):
-    def __init__(self, db: DB, execution_context: ExecutionContext):
-        super().__init__(prompts=SummaryPrompts(), db=db, execution_context=execution_context)
-
-
-class DiagnosisGenerationStep(Step):
-    def __init__(self, db: DB, execution_context: ExecutionContext):
-        super().__init__(prompts=DiagnosisPrompts(), db=db, execution_context=execution_context)
-
-    def _get_retriever(self, collection: str, db: ClientAPI,
-                                    service_context: ServiceContext) -> BaseRetriever:
         chroma_collection = db.get_or_create_collection(collection)
         vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
         vector_store_index = VectorStoreIndex.from_vector_store(vector_store, service_context=service_context)
