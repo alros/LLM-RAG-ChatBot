@@ -72,10 +72,6 @@ class Page:
             chat = f'{chat}\nPatient: "{qa["a"]}"' if 'a' in qa else chat
         return len(messages), chat
 
-    # def _get_summary(self):
-    #     _, query = self._get_chat()
-    #     return self._step_summary.query(query)
-
     def _process_input(self):
         if st.session_state[Page.USER_INPUT] and len(st.session_state[Page.USER_INPUT].strip()) > 0:
             self._process_user_text(st.session_state[Page.USER_INPUT].strip())
