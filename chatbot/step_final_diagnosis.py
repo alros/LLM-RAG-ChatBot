@@ -28,6 +28,9 @@ class FinalDiagnosisGenerationStep(KnowledgeEnrichedStep):
         severity = document['Severity']
         confidence = document['Confidence']
 
+        if number_of_questions > Config.get('diagnosis.maximum_number_of_questions'):
+            return Config.get('diagnosis.negative_diagnosis') + document['Explanation']
+
         if confidence < Config.get('diagnosis.minimum_confidence'):
             return None
 

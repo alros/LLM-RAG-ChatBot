@@ -3,9 +3,11 @@
   "dbPath": "./chroma_db/diagnosis",
   "diagnosis": {
     "minimum_number_of_questions": 5,
-    "minimum_confidence": 0.5,
-    "minimum_number_of_symptoms": 3,
-    "minimum_score": 1.5
+    "maximum_number_of_questions": 10,
+    "minimum_confidence": 0.8,
+    "minimum_number_of_symptoms": 4,
+    "minimum_score": 2,
+    "negative_diagnosis": "The patient does not seem to be affected by dementia. The reasoning is as follows:"
   },
   "kb": "./kb",
   "model": "mistral",

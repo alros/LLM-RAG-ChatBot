@@ -1,4 +1,4 @@
-# Dialog 1
+# Dialogue 1
 
 - How old are you?
 - 78
@@ -35,7 +35,7 @@ The diagnosis at this point was:
 }
 ```
 
-# Dialog 2
+# Dialogue 2
 
 - How old are you?
 - 78
