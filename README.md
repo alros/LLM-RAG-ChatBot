@@ -86,8 +86,6 @@ If all conditions are met, the LLM's explanation is translated in a friendlier m
 ![doc](docs/img/RAG.drawio.png)
 
 ### Functional flow
-
-> This is not fully implemented yet.
  
 ![flow](docs/img/LLM-Dementia-flow.drawio.png)
 
@@ -108,7 +106,7 @@ ollama serve
 Build the Db with
 
 ```shell
-python BuildDb.py
+python build_db.py
 ```
 
 Run the application with
