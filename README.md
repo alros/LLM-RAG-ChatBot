@@ -11,6 +11,7 @@ Status: **WORK IN PROGRESS!**
   - [Overall architecture](#overall-architecture)
   - [Functional flow](#functional-flow)
 - [Setup](#setup)
+  - [Ollama](#ollama)
 - [Usage](#usage)
 - [Performance](#performance)
 
@@ -91,31 +92,88 @@ If all conditions are met, the LLM's explanation is translated in a friendlier m
 
 ## Setup
 
-`pip install -r requirements.txt`
+### Ollama
+
+The application uses [Ollama](https://ollama.com/) to run the LLM. 
+Ollama can be downloaded from [the official website](https://ollama.com/download),
+from its [GitHub repository](https://github.com/ollama/ollama),
+or installed with packet managers such as [Homebrew](https://brew.sh/) on Mac.
+
+E.g. on Mac:
+```shell
+brew install ollama
+```
+
+After the installation, run Ollama and download [Mistral](https://mistral.ai/).
+
+E.g. on Mac:
+```shell
+ollama serve &
+ollama pull mistral
+```
+
+It is possible to run [Ollama in Docker](https://hub.docker.com/r/ollama/ollama),
+however the hardware acceleration may not work properly.
+Without acceleration, the system is essentially unusable.
+In [docker/ollama](docker/ollama) there is an example of Dockerfile to prepare the image. 
+
+## Python and the application
+
+The application was written and tested with [Python 3.10.13](https://www.python.org/downloads/).
+Python 3.11 was ignored because some dependencies did not support it at the time.
+
+[PyCharm](https://www.jetbrains.com/pycharm/) was chosen as IDE, but it is only a personal preference.
+
+Create a [virtual environment](https://docs.python.org/3/library/venv.html) and activate it.
+
+E.g. on Mac:
+```shell
+python -m venv /path/to/new/virtual/environment
+source /path/to/new/virtual/environment/bin/activate
+```
+
+Install all the required libraries:
+```shell
+pip install -r requirements.txt
+```
+
+### Configuration
+
+Edit [config/config.json](config/config.json).
+
+- collection: identifies the name of the collection of documents around a topic.
+- dbPath: this is the path where the database is located or where it will be created.
+- diagnosis: these are a collection of parameters to calibrate the diagnosis step:
+  - minimum_number_of_questions: minimum number of questions before the diagnosis.
+  - maximum_number_of_questions: after that number, the application will give a negative diagnosis.
+  - minimum_confidence: the LLM self-evaluate its confidence about its opinion between 0 and 1.
+  - minimum_number_of_symptoms: minimum number of symptoms to give a positive diagnosis.
+  - minimum_score: the score is `confidence * symptoms * severity`. The severity is calculated internally by the LLM.
+  - negative_diagnosis: description of the negative diagnosis. The LLM will adapt it to the dialogue.
+- model: please find model names on the [Ollama's website](https://ollama.com/library). 
+  Please note that different models perform differently, may require different prompts, and must be installed in
+  locally in Ollama.
+- prompts: configuration of the prompts.
+  - chat: these are the prompts used to continue the dialogue.
+  - summary: these are the prompts to extract the patient's description from the dialogue.
+  - diagnosis: these are the prompts to extract a JSON with the metrics to perform a diagnosis. The metrics are used
+    programmatically to decide how to proceed.
+  - final_diagnosis: in case of positive diagnosis, these prompts translate the diagnosis into a dialogue with the
+    patient.
+
+### Database creation
+
+...
 
 ## Usage
 
-Store txt documents in `./kb`.
-
-Start Ollama with
-
-```shell
-ollama serve
-```
-
-Build the Db with
-
-```shell
-python build_db.py
-```
-
-Run the application with
-
+Run the application with:
 ```shell
 python -m streamlit run app.py
 ```
 
-Connect with a browser to [http://localhost:8501/](http://localhost:8501/).
+The browser should automatically open [http://localhost:8501/](http://localhost:8501/)
+
 
 ## Performance
 

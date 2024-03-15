@@ -24,7 +24,6 @@ transformers = [
     SentenceSplitter(chunk_size=1024, chunk_overlap=20),
     TitleExtractor(
         llm=llm, metadata_mode=MetadataMode.EMBED, num_workers=8
-        # , SummaryExtractor(llm=llm, metadata_mode=MetadataMode.EMBED, num_workers=8
     )
 ]
 pipeline = IngestionPipeline(transformations=transformers)
