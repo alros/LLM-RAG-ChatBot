@@ -188,7 +188,7 @@ The configuration is shared between the `build.db` script and the application, s
 
 Run the application with:
 ```shell
-python -m streamlit run app.py
+python -m streamlit run chatbot/app.py
 ```
 
 The browser should automatically open [http://localhost:8501/](http://localhost:8501/)
