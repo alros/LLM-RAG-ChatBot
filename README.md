@@ -117,7 +117,7 @@ ollama pull mistral
 It is possible to run [Ollama in Docker](https://hub.docker.com/r/ollama/ollama),
 however the hardware acceleration may not work properly.
 Without acceleration, the system is essentially unusable.
-In [docker/ollama](docker/ollama) there is an example of Dockerfile to prepare the image. 
+In [doc/docker/ollama](docs/docker/ollama) there is an example of Dockerfile to prepare the image. 
 
 ### Python and the application
 
