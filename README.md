@@ -12,8 +12,10 @@ Status: **WORK IN PROGRESS!**
   - [Functional flow](#functional-flow)
 - [Setup](#setup)
   - [Ollama](#ollama)
+  - [Python and the application](#python-and-the-application)
+  - [Configuration](#configuration)
+  - [Database creation](#database-creation)
 - [Usage](#usage)
-- [Performance](#performance)
 
 ## Overview
 
@@ -117,7 +119,7 @@ however the hardware acceleration may not work properly.
 Without acceleration, the system is essentially unusable.
 In [docker/ollama](docker/ollama) there is an example of Dockerfile to prepare the image. 
 
-## Python and the application
+### Python and the application
 
 The application was written and tested with [Python 3.10.13](https://www.python.org/downloads/).
 Python 3.11 was ignored because some dependencies did not support it at the time.
@@ -143,6 +145,9 @@ Edit [config/config.json](config/config.json).
 
 - collection: identifies the name of the collection of documents around a topic.
 - dbPath: this is the path where the database is located or where it will be created.
+- dbLoader: configuration for the build_db script
+  - sourceExtension: acceptable file extension (e.g. ".txt")
+  - sourceFolder: source folder for the documents
 - diagnosis: these are a collection of parameters to calibrate the diagnosis step:
   - minimum_number_of_questions: minimum number of questions before the diagnosis.
   - maximum_number_of_questions: after that number, the application will give a negative diagnosis.
@@ -163,7 +168,21 @@ Edit [config/config.json](config/config.json).
 
 ### Database creation
 
-...
+Verify the content in the path indicated in `config.json` under `dbLoader.sourceFolder`.
+
+The included content was extracted from:
+
+> Dementia UK (2023) "What is dementia?".
+  Available from [https://www.dementiauk.org](https://www.dementiauk.org/information-and-support/about-dementia/what-is-dementia/).
+  [Accessed 16/03/2024]
+
+To load the content run:
+```shell
+python chatbot/build_db.py
+```
+
+The output will be a database in the location specified in `config.json` under `dbPath`.
+The configuration is shared between the `build.db` script and the application, so it will be consistent.
 
 ## Usage
 
@@ -173,15 +192,3 @@ python -m streamlit run app.py
 ```
 
 The browser should automatically open [http://localhost:8501/](http://localhost:8501/)
-
-
-## Performance
-
-Tested with 107 files in markdown for a total of 596K, on Mac M1 with 32 GB of RAM.
-
-The application is memory intensive and the answer may take 30+ seconds.
-
-The following diagram shows the memory pressure during a query. The phases of document search and answer generation are clearly visible.
-
-![memory pressure](docs/img/memory.png)
-

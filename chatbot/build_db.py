@@ -1,41 +1,60 @@
-from typing import List
-
+from typing import Optional, Dict, List
+from os import listdir
+from os.path import join as os_join
+from os.path import isfile, join
 import chromadb
-from llama_index import SimpleDirectoryReader
-from llama_index.callbacks import LlamaDebugHandler
-from llama_index.extractors import TitleExtractor
-from llama_index.ingestion import IngestionPipeline
-from llama_index.llms import Ollama
-from llama_index.node_parser import SentenceSplitter
-from llama_index.schema import MetadataMode, TextNode
-from llama_index.vector_stores import ChromaVectorStore
+from chromadb.api.models import Collection
+from llama_index import Document
+from llama_index.readers.base import BaseReader
+from pathlib import Path
 
-from chatbot.config import Config
+from config import Config
 
-db = chromadb.PersistentClient(path=Config.get('dbPath'))
-chroma_collection = db.get_or_create_collection(Config.get('collection'))
-store = ChromaVectorStore(chroma_collection=chroma_collection)
 
-llm = Ollama(model=Config.get('model'))
+class DbLoader:
 
-llama_debug = LlamaDebugHandler(print_trace_on_end=True)
+    def __init__(self):
+        self._db_path = Config.get('dbPath')
+        self._source_folder = Config.get('dbLoader.sourceFolder')
+        self._source_extension = Config.get('dbLoader.sourceExtension')
 
-transformers = [
-    SentenceSplitter(chunk_size=1024, chunk_overlap=20),
-    TitleExtractor(
-        llm=llm, metadata_mode=MetadataMode.EMBED, num_workers=8
-    )
-]
-pipeline = IngestionPipeline(transformations=transformers)
-reader = SimpleDirectoryReader(Config.get('kb'), recursive=True)
+    def load_db(self):
+        db = chromadb.PersistentClient(path=self._db_path)
 
-for docs in reader.iter_data():
-    base_nodes: List[TextNode] = pipeline.run(documents=docs)
+        files = [f for f in listdir(self._source_folder) if self._should_load(f)]
+        for file in files:
+            description = file.split('.')[0]
+            chroma_collection = db.get_or_create_collection(description)
+            print(f'loading {file} into collection={description}')
+            self._load_file(filename=file, chroma_collection=chroma_collection)
 
-    for idx, node in enumerate(base_nodes):
-        print(f'adding {node.metadata["file_path"]} / {idx} / {node.node_id}')
-        chroma_collection.add(
-            documents=[node.text],
-            ids=[node.node_id],
-            metadatas=[node.metadata]
-        )
+    def _should_load(self, filename: str) -> bool:
+        return isfile(os_join(self._source_folder, filename)) and filename.endswith(self._source_extension)
+
+    def _load_file(self, filename: str, chroma_collection: Collection):
+        file = Path(os_join(self._source_folder, filename))
+        nodes = SimpleFileReader().load_data(file, {})
+        for idx, node in enumerate(nodes):
+            chroma_collection.add(
+                documents=[node.text],
+                ids=[node.node_id],
+                metadatas=[node.metadata]
+            )
+
+
+class SimpleFileReader(BaseReader):
+
+    def __init__(self):
+        super().__init__()
+
+    def load_data(
+            self, file: Path, metadata: Optional[Dict] = None
+    ) -> List[Document]:
+        with open(file, 'r') as file:
+            content = file.read()
+            metadata = metadata if metadata is not None else {}
+            metadata['file_name'] = file.name
+            return [Document(text=content, metadata=metadata)]
+
+
+DbLoader().load_db()

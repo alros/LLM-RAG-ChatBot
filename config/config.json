@@ -1,5 +1,9 @@
 {
   "collection": "Dementia",
+  "dbLoader": {
+    "sourceExtension": ".txt",
+    "sourceFolder": "kb/diagnosis/dementia"
+  },
   "dbPath": "./chroma_db/diagnosis",
   "diagnosis": {
     "minimum_number_of_questions": 5,
