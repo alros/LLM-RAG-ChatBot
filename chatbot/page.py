@@ -1,3 +1,4 @@
+from json import JSONDecodeError
 from typing import Tuple
 
 import streamlit as st
@@ -81,7 +82,16 @@ class Page:
         with st.session_state[Page.SPINNER_THINKING], st.spinner('Thinking'):
             number_of_questions, chat = self._get_chat()
             summary = self._step_summary.query(chat)
-            diagnostic = self._step_diagnosis.query(summary)
-            final_diagnosis = self._step_final_diagnosis.query(diagnostic, number_of_questions=number_of_questions)
-            st.session_state[Page.FINAL_DIAGNOSIS] = final_diagnosis
+            done = False
+            attempts = 0
+            while not done and attempts < 3:
+                try:
+                    diagnostic = self._step_diagnosis.query(summary)
+                    final_diagnosis = self._step_final_diagnosis.query(diagnostic,
+                                                                       number_of_questions=number_of_questions)
+                    st.session_state[Page.FINAL_DIAGNOSIS] = final_diagnosis
+                    done = True
+                except JSONDecodeError:
+                    attempts = attempts + 1
+                    st.session_state[Page.FINAL_DIAGNOSIS] = None
             st.session_state[Page.USER_INPUT] = ''
