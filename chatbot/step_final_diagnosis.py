@@ -15,6 +15,9 @@ class FinalDiagnosisPrompts(Prompts):
     for generating the final diagnosis of a patient.
     """
     def __init__(self):
+        """
+        Creates the instance using the prompts.final_diagnosis configuration.
+        """
         super().__init__('prompts.final_diagnosis')
 
 

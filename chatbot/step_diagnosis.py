@@ -12,6 +12,9 @@ class DiagnosisPrompt(Prompts):
     for generating the initial evaluation of the patient.
     """
     def __init__(self):
+        """
+        Creates the instance using the prompts.diagnosis configuration.
+        """
         super().__init__('prompts.diagnosis')
 
 

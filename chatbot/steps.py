@@ -3,6 +3,7 @@ LLM RAG Chatbot
 """
 from abc import ABC
 
+import httpx
 from chromadb import ClientAPI
 from llama_index import VectorStoreIndex, ServiceContext, ChatPromptTemplate
 from llama_index.core.base_retriever import BaseRetriever
@@ -64,9 +65,12 @@ class Step(ABC):
     def query(self, query: str, **kwargs) -> str:
         if self._query_engine is None:
             self._query_engine = self._get_query_engine()
-        response = self._query_engine.query(query)
-        self._execution_context.handle(response)
-        return response.response
+        try:
+            response = self._query_engine.query(query)
+            self._execution_context.handle(response)
+            return response.response
+        except httpx.ConnectError as e:
+            raise NetworkError()
 
     def _get_query_engine(self) -> RetrieverQueryEngine:
         vector_retriever_chunk = self._get_retriever(collection=Config.get('collection'),
@@ -126,3 +130,9 @@ class KnowledgeEnrichedStep(Step, ABC):
         vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
         vector_store_index = VectorStoreIndex.from_vector_store(vector_store, service_context=service_context)
         return vector_store_index.as_retriever(similarity_top_k=self._db.retrieve_n_chunks)
+
+
+class NetworkError(Exception):
+
+    def __init__(self):
+        super().__init__('Network error: did you start Ollama?')
