@@ -1,3 +1,6 @@
+"""
+LLM RAG Chatbot
+"""
 import json
 
 from chatbot.db import DB

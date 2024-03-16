@@ -1,3 +1,6 @@
+"""
+LLM RAG Chatbot
+"""
 from json import JSONDecodeError
 from typing import Tuple
 
@@ -8,6 +11,9 @@ from steps import Step
 
 
 class Page:
+    """
+    The Page class represents the single page Chatbot application.
+    """
     SESSION_MESSAGES = 'messages'
     USER_INPUT = 'user_input'
     SPINNER_THINKING = 'thinking_spinner'

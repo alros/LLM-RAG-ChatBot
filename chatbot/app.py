@@ -1,14 +1,15 @@
+"""
+LLM RAG Chatbot
+"""
 from llama_index.llms import Ollama
-
-from chatbot.step_chat_generation import ChatGenerationStep
-from chatbot.step_diagnosis import DiagnosisGenerationStep
-from chatbot.step_final_diagnosis import FinalDiagnosisGenerationStep
-from chatbot.step_summary import SummaryGenerationStep
-from config import Config
-from page import Page
-
-from db import DB
 from execution_context import ExecutionContext
+from step_chat_generation import ChatGenerationStep
+from step_diagnosis import DiagnosisGenerationStep
+from step_final_diagnosis import FinalDiagnosisGenerationStep
+from step_summary import SummaryGenerationStep
+from db import DB
+from page import Page
+from config import Config
 
 if __name__ == "__main__":
     collection = Config.get('collection')

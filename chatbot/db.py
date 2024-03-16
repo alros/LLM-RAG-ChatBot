@@ -1,8 +1,16 @@
+"""
+LLM RAG Chatbot
+"""
 import chromadb
 from chromadb import ClientAPI
 
 
 class DB:
+    """
+    The DB class provides an interface for interacting with the local embedded
+    chroma database.
+    """
+
     def __init__(self, db_path: str, collection: str, retrieve_n_chunks: int = 1):
         self._db_path = db_path
         self._collection = collection

@@ -1,4 +1,6 @@
-import json
+"""
+LLM RAG Chatbot
+"""
 from abc import ABC
 
 from chromadb import ClientAPI
@@ -16,6 +18,11 @@ from null_retriever import NullRetriever
 
 
 class Prompts(ABC):
+    """
+    Prompts are loaded from the configuration file and provide template text
+    to guide the LLM. Every prompt includes one system prompt and one user
+    prompt.
+    """
     def __init__(self, config_path: str):
         config = Config.get(config_path)
         self._system_prompt = '\n'.join(config['system'])
@@ -31,6 +38,20 @@ class Prompts(ABC):
 
 
 class Step(ABC):
+    """
+    The Step class represents a single step in the conversation workflow.
+
+    Each step performs some operation like querying a model, evaluating
+    the patient, or generating a response. Steps are executed sequentially
+    to drive the conversation.
+
+    Steps take prompts and execution context as dependencies. The prompts
+    provide templates for system messages. The context shares state between
+    steps.
+
+    Subclasses implement the specific logic.
+    """
+
     def __init__(self,
                  prompts: Prompts,
                  db: DB,
@@ -80,6 +101,18 @@ class Step(ABC):
 
 
 class KnowledgeEnrichedStep(Step, ABC):
+    """
+    A Step subclass that responds to queries by incorporating additional
+    context from a knowledge base.
+
+    When processing a query, this step first queries the knowledge base for any
+    relevant information related to the query terms. It then combines the
+    knowledge base results with the response from querying the main model.
+
+    This allows the step to return responses that are more informed and
+    context-aware by leveraging unstructured knowledge beyond what is
+    contained in the main model alone.
+    """
 
     def __init__(self,
                  prompts: Prompts,

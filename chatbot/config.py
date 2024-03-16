@@ -1,8 +1,18 @@
+"""
+LLM RAG Chatbot
+"""
 import json
 from typing import Any
 
 
 class Config:
+    """
+    The Config class represents a configuration object that maps the
+    configuration of the application.
+
+    It exposes a convenient getter to access the elements in
+    `config.json`
+    """
 
     def __init__(self):
         self._config = None

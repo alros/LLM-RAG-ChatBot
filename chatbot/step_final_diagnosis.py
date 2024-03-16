@@ -1,3 +1,6 @@
+"""
+LLM RAG Chatbot
+"""
 import json
 
 from chatbot.config import Config
@@ -7,11 +10,19 @@ from chatbot.steps import Step, Prompts, KnowledgeEnrichedStep
 
 
 class FinalDiagnosisPrompts(Prompts):
+    """
+    The FinalDiagnosisPrompts class represents a set of prompt templates
+    for generating the final diagnosis of a patient.
+    """
     def __init__(self):
         super().__init__('prompts.final_diagnosis')
 
 
 class FinalDiagnosisGenerationStep(KnowledgeEnrichedStep):
+    """
+    The FinalDiagnosisGenerationStep class represents the step to generate
+    the final diagnosis of a patient.
+    """
 
     def __init__(self, db: DB, execution_context: ExecutionContext):
         super().__init__(prompts=FinalDiagnosisPrompts(), db=db, execution_context=execution_context)

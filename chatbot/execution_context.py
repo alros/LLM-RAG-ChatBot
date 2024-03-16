@@ -1,3 +1,6 @@
+"""
+LLM RAG Chatbot
+"""
 from llama_index import ServiceContext
 from llama_index.callbacks import LlamaDebugHandler, CallbackManager, CBEventType
 from llama_index.llms import CustomLLM
@@ -5,13 +8,20 @@ from llama_index.response.schema import RESPONSE_TYPE
 
 
 class ExecutionContext:
+    """
+    The ExecutionContext class represents the shared execution context
+    passed between steps in the conversational workflow.
+
+    It acts as a wrapper of ServiceContext and handles LLM's response
+    for logging.
+    """
 
     def __init__(self, llm: CustomLLM):
         self._llm = llm
         self._service_context = None
         self._llama_debug = None
 
-    def get_service_context(self):
+    def get_service_context(self) -> ServiceContext:
         if self._service_context is None:
             self._llama_debug = LlamaDebugHandler(print_trace_on_end=True)
             callback_manager = CallbackManager([self._llama_debug])
