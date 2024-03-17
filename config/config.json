@@ -1,4 +1,7 @@
 {
+  "chat": {
+    "defaultQuestion": "How old are you?"
+  },
   "collection": "Dementia",
   "dbLoader": {
     "sourceExtension": ".txt",
@@ -14,6 +17,13 @@
     "negative_diagnosis": "The patient does not seem to be affected by dementia. The reasoning is as follows:"
   },
   "model": "mistral",
+  "page": {
+    "header": "Chatbot",
+    "subHeader": "Assistant",
+    "spinnerText": "Thinking",
+    "title": "Medi-chat",
+    "userInputSuggestion": "Your reply"
+  },
   "prompts": {
     "chat": {
       "system": [

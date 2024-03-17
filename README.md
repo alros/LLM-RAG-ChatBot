@@ -8,8 +8,6 @@ Status: **WORK IN PROGRESS!**
 
 - [Overview](#overview)
 - [Design](#design)
-  - [Overall architecture](#overall-architecture)
-  - [Functional flow](#functional-flow)
 - [Setup](#setup)
   - [Ollama](#ollama)
   - [Python and the application](#python-and-the-application)
@@ -35,12 +33,6 @@ The main loop is as follows:
 - If the maximum number of questions is reached, close without a diagnosis.
 
 All parameters, including prompts, language model, parameters for the diagnosis, and knowledge, are fully customisable.
-
-This is an example of a complete chat:
-
-> This is based on the current version.
-
-![screenshot](docs/img/screenshot1.png)
 
 In the final loop, the dialogue is summarised by the LLM as follows:
 
@@ -81,16 +73,12 @@ The diagnosis follows these rules:
 If all conditions are met, the LLM's explanation is translated in a friendlier message for the patient. 
 
 ## Design
-
-### Overall architecture
-
-> This is not fully implemented yet.
-
-![doc](docs/img/RAG.drawio.png)
-
-### Functional flow
  
 ![flow](docs/img/LLM-Dementia-flow.drawio.png)
+
+![sequence](docs/img/sequence.png)
+
+![class](docs/img/class.png)
 
 ## Setup
 
@@ -143,7 +131,10 @@ pip install -r requirements.txt
 
 Edit [config/config.json](config/config.json).
 
+- chat: configuration of the chat.
+  - defaultQuestion: first question to the patient.
 - collection: identifies the name of the collection of documents around a topic.
+  This name is effectively the name of the source file without the extension.
 - dbPath: this is the path where the database is located or where it will be created.
 - dbLoader: configuration for the build_db script
   - sourceExtension: acceptable file extension (e.g. ".txt")
@@ -158,6 +149,12 @@ Edit [config/config.json](config/config.json).
 - model: please find model names on the [Ollama's website](https://ollama.com/library). 
   Please note that different models perform differently, may require different prompts, and must be installed in
   locally in Ollama.
+- page: configuration of the single page interface.
+  - header: page's header.
+  - subHeader: page's sub header.
+  - spinnerText: text that appears while the LLM is working.
+  - title: page's title.
+  - userInputSuggestion: text in user's input text area.
 - prompts: configuration of the prompts.
   - chat: these are the prompts used to continue the dialogue.
   - summary: these are the prompts to extract the patient's description from the dialogue.
@@ -184,6 +181,9 @@ python chatbot/build_db.py
 The output will be a database in the location specified in `config.json` under `dbPath`.
 The configuration is shared between the `build.db` script and the application, so it will be consistent.
 
+Note: the name of the collection will be the name of the source file without the extension.
+If the source file is `Dementia.txt` the value of `collection` in `config.yaml` will be `Dementia`. 
+
 ## Usage
 
 Run the application with:
@@ -192,3 +192,9 @@ python -m streamlit run chatbot/app.py
 ```
 
 The browser should automatically open [http://localhost:8501/](http://localhost:8501/)
+
+This is an example of a complete chat:
+
+> This is based on the current version.
+
+![screenshot](docs/img/screenshot1.png)

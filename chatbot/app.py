@@ -1,30 +1,28 @@
-from llama_index.llms import Ollama
-
-from chatbot.step_chat_generation import ChatGenerationStep
-from chatbot.step_diagnosis import DiagnosisGenerationStep
-from chatbot.step_final_diagnosis import FinalDiagnosisGenerationStep
-from chatbot.step_summary import SummaryGenerationStep
-from config import Config
+"""
+LLM RAG Chatbot
+"""
+from execution_context import ExecutionContext
+from step_chat_generation import ChatGenerationStep
+from step_diagnosis import DiagnosisGenerationStep
+from step_final_diagnosis import FinalDiagnosisGenerationStep
+from step_summary import SummaryGenerationStep
+from db import DB
 from page import Page
 
-from db import DB
-from execution_context import ExecutionContext
+#
+# This is the main script to run the LLM RAG Chatbot.
+#
 
 if __name__ == "__main__":
-    collection = Config.get('collection')
-    db_path = Config.get('dbPath')
-    model = Config.get('model')
-
-    db = DB(db_path=db_path,
-            collection=collection)
-    llm = Ollama(model=model)
-
-    execution_context = ExecutionContext(llm=llm)
+    # assemble the dependencies
+    db = DB()
+    execution_context = ExecutionContext()
     step_chat = ChatGenerationStep(db=db, execution_context=execution_context)
     step_summary = SummaryGenerationStep(db=db, execution_context=execution_context)
     step_diagnosis = DiagnosisGenerationStep(db=db, execution_context=execution_context)
     step_final_diagnosis = FinalDiagnosisGenerationStep(db=db, execution_context=execution_context)
 
+    # wire the dependencies into the streamlit Page
     Page(step_chat=step_chat,
          step_summary=step_summary,
          step_diagnosis=step_diagnosis,
