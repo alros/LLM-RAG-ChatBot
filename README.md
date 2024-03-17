@@ -8,8 +8,6 @@ Status: **WORK IN PROGRESS!**
 
 - [Overview](#overview)
 - [Design](#design)
-  - [Overall architecture](#overall-architecture)
-  - [Functional flow](#functional-flow)
 - [Setup](#setup)
   - [Ollama](#ollama)
   - [Python and the application](#python-and-the-application)
@@ -35,12 +33,6 @@ The main loop is as follows:
 - If the maximum number of questions is reached, close without a diagnosis.
 
 All parameters, including prompts, language model, parameters for the diagnosis, and knowledge, are fully customisable.
-
-This is an example of a complete chat:
-
-> This is based on the current version.
-
-![screenshot](docs/img/screenshot1.png)
 
 In the final loop, the dialogue is summarised by the LLM as follows:
 
@@ -81,18 +73,10 @@ The diagnosis follows these rules:
 If all conditions are met, the LLM's explanation is translated in a friendlier message for the patient. 
 
 ## Design
-
-### Overall architecture
-
-> This is not fully implemented yet.
-
-![doc](docs/img/RAG.drawio.png)
-
-### Functional flow
  
 ![flow](docs/img/LLM-Dementia-flow.drawio.png)
 
-### Class diagram
+![sequence](docs/img/sequence.png)
 
 ![class](docs/img/class.png)
 
@@ -208,3 +192,9 @@ python -m streamlit run chatbot/app.py
 ```
 
 The browser should automatically open [http://localhost:8501/](http://localhost:8501/)
+
+This is an example of a complete chat:
+
+> This is based on the current version.
+
+![screenshot](docs/img/screenshot1.png)
