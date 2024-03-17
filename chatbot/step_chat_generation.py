@@ -2,11 +2,10 @@
 LLM RAG Chatbot
 """
 import json
-
 from chatbot.config import Config
 from chatbot.db import DB
 from chatbot.execution_context import ExecutionContext
-from chatbot.steps import Step, Prompts, KnowledgeEnrichedStep
+from chatbot.steps import Prompts, KnowledgeEnrichedStep
 
 
 class ChatPrompts(Prompts):
@@ -27,6 +26,7 @@ class ChatGenerationStep(KnowledgeEnrichedStep):
     The ChatGenerationStep class represents the step to generate
     the questions to the patient.
     """
+
     def __init__(self, db: DB, execution_context: ExecutionContext):
         """
         Creates the instance

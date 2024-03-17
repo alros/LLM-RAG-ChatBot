@@ -92,6 +92,10 @@ If all conditions are met, the LLM's explanation is translated in a friendlier m
  
 ![flow](docs/img/LLM-Dementia-flow.drawio.png)
 
+### Class diagram
+
+![class](docs/img/class.png)
+
 ## Setup
 
 ### Ollama
@@ -146,6 +150,7 @@ Edit [config/config.json](config/config.json).
 - chat: configuration of the chat.
   - defaultQuestion: first question to the patient.
 - collection: identifies the name of the collection of documents around a topic.
+  This name is effectively the name of the source file without the extension.
 - dbPath: this is the path where the database is located or where it will be created.
 - dbLoader: configuration for the build_db script
   - sourceExtension: acceptable file extension (e.g. ".txt")
@@ -191,6 +196,9 @@ python chatbot/build_db.py
 
 The output will be a database in the location specified in `config.json` under `dbPath`.
 The configuration is shared between the `build.db` script and the application, so it will be consistent.
+
+Note: the name of the collection will be the name of the source file without the extension.
+If the source file is `Dementia.txt` the value of `collection` in `config.yaml` will be `Dementia`. 
 
 ## Usage
 

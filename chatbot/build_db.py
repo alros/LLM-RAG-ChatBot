@@ -5,12 +5,11 @@ from typing import Optional, Dict, List
 from os import listdir
 from os.path import join as os_join
 from os.path import isfile
+from pathlib import Path
 import chromadb
 from chromadb.api.models import Collection
 from llama_index import Document
 from llama_index.readers.base import BaseReader
-from pathlib import Path
-
 from config import Config
 
 
@@ -39,12 +38,20 @@ class DbLoader:
         The source folder is specified in config.json 'dbLoader.sourceFolder'.
         The source file extension is specified in config.json 'dbLoader.sourceExtension'.
 
+        The filename without extension determines the name of the target database
+        collection: 1 file 1 collection
+
         :return: None.
         """
+
+        # creates an instance of Chroma
         db = chromadb.PersistentClient(path=self._db_path)
 
+        # iterates over the files in the folder
+        # only files with the right extension are loaded
         files = [f for f in listdir(self._source_folder) if self._should_load(f)]
         for file in files:
+            # The filename determines the collection name
             description = file.split('.')[0]
             chroma_collection = db.get_or_create_collection(description)
             print(f'loading {file} into collection={description}')
@@ -83,6 +90,9 @@ class SimpleFileReader(BaseReader):
     """
 
     def __init__(self):
+        """
+        Builds the instance.
+        """
         super().__init__()
 
     def load_data(
@@ -103,4 +113,5 @@ class SimpleFileReader(BaseReader):
             return [Document(text=content, metadata=metadata)]
 
 
+# This adds the document to the db. It creates the db if needed
 DbLoader().load_db()
