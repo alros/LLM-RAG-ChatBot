@@ -143,6 +143,8 @@ pip install -r requirements.txt
 
 Edit [config/config.json](config/config.json).
 
+- chat: configuration of the chat.
+  - defaultQuestion: first question to the patient.
 - collection: identifies the name of the collection of documents around a topic.
 - dbPath: this is the path where the database is located or where it will be created.
 - dbLoader: configuration for the build_db script
@@ -158,6 +160,12 @@ Edit [config/config.json](config/config.json).
 - model: please find model names on the [Ollama's website](https://ollama.com/library). 
   Please note that different models perform differently, may require different prompts, and must be installed in
   locally in Ollama.
+- page: configuration of the single page interface.
+  - header: page's header.
+  - subHeader: page's sub header.
+  - spinnerText: text that appears while the LLM is working.
+  - title: page's title.
+  - userInputSuggestion: text in user's input text area.
 - prompts: configuration of the prompts.
   - chat: these are the prompts used to continue the dialogue.
   - summary: these are the prompts to extract the patient's description from the dialogue.

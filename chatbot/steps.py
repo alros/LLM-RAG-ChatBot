@@ -70,6 +70,7 @@ class Step(ABC):
             self._execution_context.handle(response)
             return response.response
         except httpx.ConnectError as e:
+            # common reason: Ollama is not running
             raise NetworkError()
 
     def _get_query_engine(self) -> RetrieverQueryEngine:

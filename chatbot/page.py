@@ -7,6 +7,7 @@ from typing import Tuple
 import streamlit as st
 from streamlit_chat import message
 
+from chatbot.config import Config
 from steps import Step
 
 
@@ -29,12 +30,12 @@ class Page:
         self._step_diagnosis = step_diagnosis
         self._step_final_diagnosis = step_final_diagnosis
 
-        st.set_page_config(page_title='Medi-chat')
+        st.set_page_config(page_title=Config.get('page.title'))
         if Page.SESSION_MESSAGES not in st.session_state:
             st.session_state[Page.SESSION_MESSAGES] = []
 
-        st.header('Chatbot')
-        st.subheader('Assistant')
+        st.header(Config.get('page.header'))
+        st.subheader(Config.get('page.subHeader'))
 
         if Page.FINAL_DIAGNOSIS in st.session_state and st.session_state[Page.FINAL_DIAGNOSIS] is not None:
             self._close_session(st.session_state[Page.FINAL_DIAGNOSIS])
@@ -50,7 +51,7 @@ class Page:
 
         self._update_the_page()
 
-        st.text_input('Your reply', key=Page.USER_INPUT, on_change=self._process_input)
+        st.text_input(Config.get('page.userInputSuggestion'), key=Page.USER_INPUT, on_change=self._process_input)
 
     def _close_session(self, final_diagnosis: str):
         st.session_state[Page.SESSION_MESSAGES].append({
@@ -85,7 +86,7 @@ class Page:
 
     def _process_user_text(self, user_text: str):
         st.session_state[Page.SESSION_MESSAGES][len(st.session_state[Page.SESSION_MESSAGES]) - 1]['a'] = user_text
-        with st.session_state[Page.SPINNER_THINKING], st.spinner('Thinking'):
+        with st.session_state[Page.SPINNER_THINKING], st.spinner(Config.get('page.spinnerText')):
             number_of_questions, chat = self._get_chat()
             summary = self._step_summary.query(chat)
             done = False
