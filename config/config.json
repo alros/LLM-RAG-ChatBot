@@ -1,11 +1,14 @@
 {
   "chat": {
-    "defaultQuestion": "How old are you?"
+    "defaultQuestion": "How old are you?",
+    "startDiscussion": "Do you have any question?"
   },
   "collection": "Dementia",
   "dbLoader": {
+    "llmSherpaUrl": "http://localhost:5010/api/parseDocument?renderFormat=all",
     "sourceExtension": ".txt",
-    "sourceFolder": "kb/diagnosis/dementia"
+    "sourceFolder": "kb/diagnosis/dementia",
+    "kbCollectionSuffix": "-kb"
   },
   "dbPath": "./chroma_db/diagnosis",
   "diagnosis": {
@@ -41,6 +44,27 @@
         "Given the conversation with the patient, and not prior knowledge, generate a question to find out if the patient experiences any symptom in the context.",
         "You will not mention symptoms that were already mentioned.",
         "You will respond only with a JSON object with the key Question with question for the patient, the key Explanation with the explanation."
+      ]
+    },
+    "discussion": {
+      "system": [
+        "You are an expert Doctor able to give medical advice.",
+        "This is a description of your patient",
+        "<description>",
+        "{}",
+        "</description>"
+      ],
+      "user": [
+        "Context information is below.",
+        "<context>",
+        "{context_str}",
+        "</context>",
+        "This is the conversation with the patient:",
+        "<conversation>",
+        "{query_str}",
+        "</conversation>",
+        "Given the conversation with the patient, and the context, respond to the patient.",
+        "You will respond only with a JSON object with the key the Answer with the answer for the patient, the key Explanation with the explanation."
       ]
     },
     "summary": {

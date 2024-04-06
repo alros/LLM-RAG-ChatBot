@@ -92,14 +92,14 @@ class Step(ABC):
         :return: the response or None.
         """
         try:
-            response = self._get_query_engine().query(query)
+            response = self._get_query_engine(**kwargs).query(query)
             self._execution_context.handle(response)
             return response.response
-        except httpx.ConnectError as e:
+        except (httpx.ConnectError, httpx.HTTPStatusError) as e:
             # common reason: Ollama is not running
             raise NetworkError()
 
-    def _get_query_engine(self) -> RetrieverQueryEngine:
+    def _get_query_engine(self, **kwargs) -> RetrieverQueryEngine:
         """
         Creates the instance of the query engine with lazy loading.
         :return: a singleton.
@@ -111,7 +111,8 @@ class Step(ABC):
                                                          service_context=self._execution_context.get_service_context())
             # this creates the prompt templates
             text_template = self._get_prompt_template(system_prompt=self._prompts.system_prompt,
-                                                      user_prompt=self._prompts.user_prompt)
+                                                      user_prompt=self._prompts.user_prompt,
+                                                      **kwargs)
             # query engine using the retriever and the prompts
             self._query_engine = RetrieverQueryEngine.from_args(
                 vector_retriever_chunk,
@@ -134,8 +135,7 @@ class Step(ABC):
         """
         return NullRetriever()
 
-    @staticmethod
-    def _get_prompt_template(system_prompt: str, user_prompt: str) -> ChatPromptTemplate:
+    def _get_prompt_template(self, system_prompt: str, user_prompt: str, **kwargs) -> ChatPromptTemplate:
         """
         Utility method to assemble the template.
         :param system_prompt: system prompt.
