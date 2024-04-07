@@ -55,7 +55,7 @@
         "</description>"
       ],
       "user": [
-        "Context information is below.",
+        "This context contains recommended actions for the patient.",
         "<context>",
         "{context_str}",
         "</context>",
@@ -63,7 +63,8 @@
         "<conversation>",
         "{query_str}",
         "</conversation>",
-        "Given the conversation with the patient, and the context, respond to the patient.",
+        "Given the conversation with the patient, and the context, provide guidance to the patient.",
+        "Do not mention the context.",
         "You will respond only with a JSON object with the key the Answer with the answer for the patient, the key Explanation with the explanation."
       ]
     },
