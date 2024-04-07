@@ -53,9 +53,6 @@ class Page:
             st.session_state[Page.SPINNER_THINKING] = st.empty()
             st.session_state[Page.SKIP_MESSAGES] = 0
 
-        # TODO --> ELIMINATE THIS LINE <---
-        # st.session_state[Page.DISCUSSION] = True
-
         st.header(Config.get('page.header'))
         st.subheader(Config.get('page.subHeader'))
 
@@ -111,9 +108,9 @@ class Page:
         st.session_state[Page.SESSION_MESSAGES].append({
             'q': next_answer,
         })
+        self._update_the_page()
         st.text_input(Config.get('page.userInputSuggestion'), key=Page.USER_INPUT,
                       on_change=self._process_input_discussion)
-        self._update_the_page()
 
     def _update_the_page(self) -> None:
         """
