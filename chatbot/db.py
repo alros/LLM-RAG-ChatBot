@@ -13,13 +13,12 @@ class DB:
     database.
     """
 
-    def __init__(self):
+    def __init__(self, collection_name:str):
         """
         Initialise the instance. The configuration is fetched from `config.yaml`.
         """
 
         self._db_path = Config.get('dbPath')
-        self._collection = Config.get('collection')
 
         # This is something for future evolutions where a collection can contain
         # multiple documents split in multiple chunks
