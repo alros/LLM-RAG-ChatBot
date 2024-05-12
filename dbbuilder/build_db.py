@@ -8,6 +8,7 @@ from pathlib import Path
 
 import chromadb
 from chromadb.api.models import Collection
+from urllib3.exceptions import MaxRetryError
 
 from chatbot.config import Config
 from dbbuilder.simple_file_reader import SimpleFileReader
@@ -60,7 +61,12 @@ class DbLoader:
                 collection_name = base_chroma_collection + Config.get('dbLoader.kbCollectionSuffix')
                 chroma_collection = db.get_or_create_collection(collection_name)
                 print(f'loading {file} into collection={collection_name}')
-                self._load_file_kb(filename=file, chroma_collection=chroma_collection)
+                try:
+                    self._load_file_kb(filename=file, chroma_collection=chroma_collection)
+                except MaxRetryError as e:
+                    print('Connection failed, please verify that NLM-Ingestor runs on the expected port.')
+                    print('Execution aborted.')
+                    break
             else:
                 collection_name = base_chroma_collection
                 chroma_collection = db.get_or_create_collection(collection_name)

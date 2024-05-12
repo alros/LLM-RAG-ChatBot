@@ -189,6 +189,18 @@ The included content was extracted from:
 
 Add small pdf documents (e.g. chapters from a book) to the input folder (e.g. `kb/diagnosis/dementia`)
 
+Start nlm-ingestor.
+```shell
+docker pull ghcr.io/nlmatics/nlm-ingestor:latest
+docker run -p 5010:5001 --name my_pdf_ingestor ghcr.io/nlmatics/nlm-ingestor:latest
+```
+
+If the download requires a login follow this process:
+- Login on GitHub.
+- Create a token: Profile / Settings / Developer Settings / Personal access tokens / Fine-grained tokens: a read-only token with no permission will suffice.
+- run `export CR_PAT=THE_TOKEN`
+- run and login on GitHub if required `echo $CR_PAT | docker login ghcr.io -u YOUR_GITHUB_USER --password-stdin`
+
 To load the content run:
 ```shell
 python chatbot/build_db.py

@@ -28,7 +28,7 @@ class SmarterPDFReader(BaseReader):
                 'chunk_index': idx,
                 'file_name': file_path.name,
             }
-            print(f'adding {file_path.name} chunk {idx} to index')
+            print(f'indexing {file_path.name} chunk {idx}')
             docs.append(PDFDocument(text=text, metadata=metadata))
         return docs
 
