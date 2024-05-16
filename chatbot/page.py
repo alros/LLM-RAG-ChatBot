@@ -55,6 +55,7 @@ class Page:
 
         st.header(Config.get('page.header'))
         st.subheader(Config.get('page.subHeader'))
+        st.warning(Config.get('page.warning'), icon="⚠️")
 
         if Page.DISCUSSION in st.session_state:
             self._discuss()
