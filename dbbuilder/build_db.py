@@ -112,6 +112,7 @@ class DbLoader:
         reader = SmarterPDFReader(Config.get('dbLoader.llmSherpaUrl'))
         chunks = reader.load_data(file_path=file)
         for chunk in chunks:
+            print(f'\n\n{chunk}\n\n')
             chroma_collection.add(
                 documents=[chunk.text],
                 ids=[chunk.node_id],
