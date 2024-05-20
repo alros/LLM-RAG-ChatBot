@@ -51,7 +51,7 @@ class SmarterPDFReader(BaseReader):
             }
             docs.append(PDFDocument(text=text, metadata=metadata))
         docs = self._compact(docs)
-        docs = self._fix_newlines(docs)
+        docs = self._fix_newlines_and_citations(docs)
         return docs
 
     def _find_base_block_class(self, chunks: List[Document]) -> str:
@@ -107,7 +107,7 @@ class SmarterPDFReader(BaseReader):
         final.append(current)
         return final
 
-    def _fix_newlines(self, docs: List[Document]):
+    def _fix_newlines_and_citations(self, docs: List[Document]):
         """
         removes breaking - inside a word caused by new lines in the original PDF
         :param docs: list to filter
@@ -115,6 +115,7 @@ class SmarterPDFReader(BaseReader):
         """
         for _, doc in enumerate(docs):
             doc.text = re.sub(r"(\w)- (\w)", r"\1\2", doc.text)
+            doc.text = re.sub(r" (\[[\d, ]+])|(\([\d, ]+\)) ", r" ", doc.text)
         return docs
 
 
