@@ -49,24 +49,23 @@
     },
     "discussion": {
       "system": [
-        "You are an expert Doctor able to give medical advice.",
-        "This is a description of your patient",
+        "You are a doctor talking with your patient.",
+        "You speak clearly, with a professional tone.",
+        "This is a description of your patient:",
         "<description>",
         "{}",
         "</description>"
       ],
       "user": [
-        "This context contains recommended actions for the patient.",
+        "Context information is below:",
         "<context>",
         "{context_str}",
         "</context>",
-        "This is the conversation with the patient:",
-        "<conversation>",
+        "Given the context information and not prior knowledge, answer the query:",
+        "<query>",
         "{query_str}",
-        "</conversation>",
-        "Given the conversation with the patient, and the context, provide guidance to the patient.",
-        "Do not mention the context.",
-        "You will respond only with a JSON object with the key the Answer with the answer for the patient, the key Explanation with the explanation."
+        "</query>",
+        "Answer:"
       ]
     },
     "summary": {

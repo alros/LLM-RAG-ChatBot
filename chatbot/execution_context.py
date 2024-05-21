@@ -64,7 +64,7 @@ class ExecutionContext:
         print('\n==================== RESPONSE ====================\n')
         print('\n  ------------------ source nodes ----------------')
         for node in response.source_nodes:
-            print(f'  {node.node_id}: score {node.score} - {node.node.metadata["file_name"]}\n\n')
+            print(f'  {node.node_id}: score {node.score} - {node.node.metadata["file_name"]}\n{node.text}\n\n')
         print('  ----------------- /source nodes ----------------\n')
         print('\n  ------------------ events pairs ----------------\n')
         for event_pair in event_pairs:

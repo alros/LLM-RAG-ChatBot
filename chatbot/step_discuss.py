@@ -1,3 +1,6 @@
+"""
+LLM RAG Chatbot
+"""
 from chromadb import ClientAPI
 from llama_index import ServiceContext, VectorStoreIndex, ChatPromptTemplate
 from llama_index.core.base_retriever import BaseRetriever
@@ -8,8 +11,6 @@ from chatbot.config import Config
 from chatbot.db import DB
 from chatbot.execution_context import ExecutionContext
 from chatbot.steps import Prompts, KnowledgeEnrichedStep
-
-import json
 
 
 class DiscussionPrompt(Prompts):
@@ -22,12 +23,12 @@ class DiscussionStep(KnowledgeEnrichedStep):
 
     def __init__(self, db: DB, execution_context: ExecutionContext):
         super().__init__(prompts=DiscussionPrompt(), db=db, execution_context=execution_context)
-        self._retrieve_N_chunks = 10
+        self._retrieve_N_chunks = 5
 
     def query(self, query: str, **kwargs) -> str:
         summary = kwargs['summary']
         next_answer = super().query(query, summary=summary)
-        return json.loads(next_answer)['Answer']
+        return next_answer
 
     def _get_retriever(self, collection: str, db: ClientAPI,
                        service_context: ServiceContext) -> BaseRetriever:

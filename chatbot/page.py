@@ -138,7 +138,7 @@ class Page:
         return self._step_chat.query(query)
 
     def _get_next_answer(self) -> str:
-        _, query = self._get_chat()
+        query = self._get_last_message()
         return self._step_discussion.query(query, summary=st.session_state[Page.PATIENT_SUMMARY])
 
     def _get_chat(self) -> Tuple[int, str]:
@@ -157,6 +157,10 @@ class Page:
                 chat = f'{chat}You: "{qa["q"]}"'
                 chat = f'{chat}\nPatient: "{qa["a"]}"' if 'a' in qa else chat
         return len(messages), chat
+
+    def _get_last_message(self) -> str:
+        messages = st.session_state[Page.SESSION_MESSAGES]
+        return messages[len(messages)-1]['a']
 
     def _process_input(self) -> None:
         """

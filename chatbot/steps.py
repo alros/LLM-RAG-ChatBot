@@ -2,13 +2,14 @@
 LLM RAG Chatbot
 """
 from abc import ABC
+
 import httpx
 from chromadb import ClientAPI
 from llama_index import VectorStoreIndex, ServiceContext, ChatPromptTemplate
 from llama_index.core.base_retriever import BaseRetriever
 from llama_index.llms import ChatMessage, MessageRole
 from llama_index.query_engine import RetrieverQueryEngine
-from llama_index.response_synthesizers import ResponseMode
+from llama_index.response_synthesizers import ResponseMode, get_response_synthesizer
 from llama_index.vector_stores import ChromaVectorStore
 from chatbot.config import Config
 from db import DB
@@ -95,7 +96,7 @@ class Step(ABC):
             response = self._get_query_engine(**kwargs).query(query)
             self._execution_context.handle(response)
             return response.response
-        except (httpx.ConnectError, httpx.HTTPStatusError) as e:
+        except (httpx.ConnectError, httpx.HTTPStatusError, httpx.ReadTimeout) as e:
             # common reason: Ollama is not running
             raise NetworkError()
 
@@ -105,10 +106,11 @@ class Step(ABC):
         :return: a singleton.
         """
         if self._query_engine is None:
+            service_context = self._execution_context.get_service_context()
             # this creates the vector retriever (it can be a NullRetriever)
             vector_retriever_chunk = self._get_retriever(collection=Config.get('collection'),
                                                          db=self._db.get_instance(),
-                                                         service_context=self._execution_context.get_service_context())
+                                                         service_context=service_context)
             # this creates the prompt templates
             text_template = self._get_prompt_template(system_prompt=self._prompts.system_prompt,
                                                       user_prompt=self._prompts.user_prompt,
