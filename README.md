@@ -1,5 +1,13 @@
 # LLM-RAG-ChatBot
 
+## ⚠️ Disclaimer ⚠️
+
+The application presented here is experimental in nature and has not been validated for accuracy or safety in medical settings. This application is NOT intended for use in any medical or healthcare context. It should not be relied upon for diagnosis, treatment, or any other medical decision-making.
+
+**This project is purely for research and educational purposes only.**
+
+## Description
+
 LLM-based chatbot using Retrieval-Augmented Generation (RAG) to give answers based on local files.
 
 Use case: evaluate if a person shows signs of dementia.
